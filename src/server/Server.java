@@ -18,98 +18,51 @@ import java.util.concurrent.Executors;
  */
 public class Server {
     private static boolean running = true;
-    //private static Socket playerSocket; 
+    private static Socket playerSocket;
+    private static String playerName;
+    private static Player clientThread;
+    private static PrintWriter out;
+    private static Scanner keyIn;
     private static final int SERVER_PORT = 9090;
-    private static ExecutorService threadPool;
+    private static ExecutorService threadPool = Executors.newCachedThreadPool();
     private static LinkedList<Player> playerList;
-    private static Player player1; //**Need to move this to separate GameSession class
+    //private static Player player1; //**Need to move this to separate GameSession class
     //private static Player player2; ** " 
     
     //private ObjectOutputStream out;
 
     public static void main(String[] args) throws IOException {
-
-        try (ServerSocket listener = new ServerSocket(SERVER_PORT)){
-            System.out.println("Chess server running ...");
-            threadPool = Executors.newCachedThreadPool();
         
-            while(running) {
-                threadPool.execute( new Player(listener.accept()) );
-            }
-        }
+        ServerSocket listener = new ServerSocket(SERVER_PORT);
+                while(running) {
+                    System.out.println("Chess server running ...");
+                    playerSocket = listener.accept();
+                    System.out.println("Client connected successfully.");
+                    out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
+                    //clientThread = new Player(playerSocket); shit aint workin
+                    out.println("Welcome! Please enter a username: ");
+                    playerList.add(clientThread);
+                    threadPool.execute(clientThread);
+                }
+    }
     
     /**
     client.close();
     listener.close();
     * */
-    }
-
-
-
-    static class Player implements Runnable {
-        Socket playerSocket;
-        String playerName;
-        Scanner keyIn;
-        PrintWriter out;
-        
-        public Player(Socket playerSocket){
-            this.playerSocket = playerSocket;
-        }
-        
-        //Overload
-        public Player(Socket playerSocket, String playerName){
-            this.playerSocket = playerSocket;
-            this.playerName = playerName;
-        }
     
-        @Override
-        public void run() {
-            try {
-                setup();
-            } catch (IOException ioe) {
-            } finally {
-                try {
-                    playerSocket.close();
-                } catch (IOException ioe){                    
-                }
-            }
-        }
-        
-        public Player setup() throws IOException {
-            out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-            out.println("Welcome! Please enter a username: ");
-            out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
-            keyIn.nextLine();
-            processInput();
-            return player1;
-            }
-        
-        
-        public String getPlayerName() throws IOException {
-            keyIn = new Scanner(playerSocket.getInputStream());             //get message FROM the client
-            while (keyIn.hasNextLine()){
-                String nameString = keyIn.nextLine();
-                if (nameString == null || nameString.length()<3) {
-                    out.println("Please enter a different username: ");
-                    keyIn.nextLine();
-                } else {
-                    playerName = keyIn.nextLine();
-                }
-            }
-            return playerName;
-        }
-        
         public void processInput() throws IOException {
+            keyIn = keyIn = new Scanner(playerSocket.getInputStream());
             while (keyIn.hasNextLine()){
                 String input = keyIn.nextLine();
                 if (input.startsWith("EXIT")){
                     out.println("Exiting session. Socket closing.");
                     try {
                         playerSocket.close();
-                    } catch (IOException e) {
+                    } catch (IOException ioe) {
                     }
                 } else if (input.startsWith("START")){
-                    sendList();
+                    break; //sendList();
                 } else {
                     out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
                     out.flush();
@@ -117,6 +70,12 @@ public class Server {
             }
         }
         
+        public void gamePrompt() throws IOException {
+            out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
+            keyIn.nextLine();
+            processInput();
+        }
+    /**    
         // challenge an opponent to play; opponent can accept or reject
         // *********** Should this move to GameSession class??? ************
         public Player challengeOpponent() throws IOException {
@@ -147,7 +106,6 @@ public class Server {
             }
             return opponent;
         }
-        
         // send list of opponents to client
         public void sendList() throws IOException {
             
@@ -167,6 +125,6 @@ public class Server {
                 out.println("There are currently no other players.");
             }
         }
-    
     }
+*/
 }

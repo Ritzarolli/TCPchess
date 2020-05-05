@@ -14,22 +14,17 @@ import java.io.*;
 public class Client {
         private static int serverPort;
         private static Scanner input;
+        private static PrintWriter output;
         private static Socket socket;
         private static final int SERVER_PORT = 9090;
         private static final String SERVER_IP = "127.0.0.1";
-        
-    /**    
-        public Client(){
-            serverPort = 9090;
-            socket = new Socket();
-            input = new Scanner(System.in);
-    }
-    */
+    
     
     public static void main(String[] args) throws IOException {
         serverPort = 9090;
         socket = new Socket("127.0.0.1",serverPort);
         input = new Scanner( new InputStreamReader(socket.getInputStream()) );
+        output = new PrintWriter(socket.getOutputStream(), true);
         
         while (input.hasNextLine()){
             String serverResponse = input.nextLine();
