@@ -21,8 +21,8 @@ public class Client {
     
     
     public static void main(String[] args) throws IOException {
+        try {
         socket = new Socket(SERVER_IP,SERVER_PORT);
-        //input = new Scanner( new InputStreamReader(socket.getInputStream()) );
         BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()) );
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
         output = new PrintWriter(socket.getOutputStream(), true);
@@ -36,42 +36,9 @@ public class Client {
             String serverResponse = input.readLine();
             System.out.println(serverResponse);
         }
-        
-        /**
-        while (input.hasNextLine()){
-            String serverResponse = input.nextLine();
-            System.out.println(serverResponse);
-        }
-        socket.close();
-        
-}
-        
-    public void run() throws IOException {
-        //System.out.print("Enter server IP: ");
-        //String ip = input.nextLine();
-        String ip = "127.0.0.1";
-        InetSocketAddress sa = new InetSocketAddress(ip, serverPort);
-        try {
-            socket.connect(sa);
-        } catch (SocketException se) {
-            socket.close();
-        }
-        
-        
+        } catch (Exception e){
+            e.printStackTrace();
+        }        
     }
-    
-    private void close() {
-        boolean closing = true;
-        try {
-            System.out.println("There was an error connecting to the server. Please check the IP Address and try again.");
-            socket.close();
-        } catch (IOException ioe) {
-            System.err.println("The socket could not be closed.");
-            closing = false;
-        }
-        if (closing) {
-            System.exit(0);
-        }
-    }*/
 }
-}
+

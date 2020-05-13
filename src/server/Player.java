@@ -47,7 +47,9 @@ public class Player implements Runnable {
                         }
                     }
                     else if (request.equalsIgnoreCase("START")) {
+                        out.println("loOk At ThIs ChEsS GaMe ooOooOOoo"); 
                         //Server.sendList();
+                        break;
                     } else {
                         out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
                         out.flush();
@@ -56,26 +58,8 @@ public class Player implements Runnable {
             } catch (IOException ioe) {
                 System.err.println("IO Exception in Player class");
                 System.err.println(ioe.getStackTrace());
+            } finally {
+                out.close();
             }
         }
-        
-        public void setup() throws IOException {
-            playerSocket = this.playerSocket; 
-            playerName = this.playerName;
-            }
-        
-        public static String getPlayerName() throws IOException {
-            keyIn = new Scanner(playerSocket.getInputStream());             //get message FROM the client
-            out = new PrintWriter(playerSocket.getOutputStream(), true);
-                String nameString = keyIn.nextLine();
-                if (nameString == null || nameString.length()<3) {
-                    out.println("Please enter a different username: ");
-                    keyIn.nextLine();
-                } else {
-                    playerName = nameString;
-            }
-            return playerName;
-        }
-        
-
 }

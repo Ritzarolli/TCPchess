@@ -43,7 +43,7 @@ public class Server {
                     
                     promptUsername();
                     
-                    clientThread = new Player(playerSocket, playerName); //shit aint workin
+                    clientThread = new Player(playerSocket, playerName);
                     playerList.add(clientThread);
                     threadPool.execute(clientThread);
                     out.println("Welcome "+playerName+"!");
@@ -51,10 +51,7 @@ public class Server {
                 }
     }
     
-    /**
-    client.close();
-    listener.close();
-    * */
+
         public static void promptUsername() throws IOException {
             out.println("Welcome! Please enter a username: ");
             String nameString = streamIn.nextLine();
@@ -121,6 +118,8 @@ public class Server {
             }
             return opponent;
         }
+        
+        
         // send list of opponents to client
         public void sendList() throws IOException {
             
