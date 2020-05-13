@@ -5,7 +5,9 @@
  */
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -17,31 +19,52 @@ import java.util.Scanner;
  */
 public class Player implements Runnable {
    
-        Socket playerSocket;
-        String playerName;
-        Scanner keyIn;
-        PrintWriter out;
+        static Socket playerSocket;
+        static String playerName;
+        static Scanner keyIn;
+        static BufferedReader in;
+        static PrintWriter out;
 
 
-        public Player(Socket playerSocket, String playerName){
+        public Player(Socket playerSocket, String playerName) throws IOException {
             this.playerSocket = playerSocket;
             this.playerName = playerName;
+            in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()) );
+            out = new PrintWriter(playerSocket.getOutputStream(), true);
         }
     
         @Override
         public void run() {
             try {
-                setup();
+                while (true) {
+                    String request = in.readLine();
+                    if (request.equalsIgnoreCase("EXIT")){
+                        out.println("Exiting session. Socket closing.");
+                        try {
+                            playerSocket.close();
+                        } catch (IOException ioe) {
+                            out.println("Error closing socket.");
+                        }
+                    }
+                    else if (request.equalsIgnoreCase("START")) {
+                        //Server.sendList();
+                    } else {
+                        out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
+                        out.flush();
+                    }
+                }
             } catch (IOException ioe) {
+                System.err.println("IO Exception in Player class");
+                System.err.println(ioe.getStackTrace());
             }
         }
         
         public void setup() throws IOException {
             playerSocket = this.playerSocket; 
-            playerName = getPlayerName();
+            playerName = this.playerName;
             }
         
-        public String getPlayerName() throws IOException {
+        public static String getPlayerName() throws IOException {
             keyIn = new Scanner(playerSocket.getInputStream());             //get message FROM the client
             out = new PrintWriter(playerSocket.getOutputStream(), true);
                 String nameString = keyIn.nextLine();

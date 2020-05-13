@@ -12,8 +12,8 @@ import java.io.*;
  * @author mnhammond0
  */
 public class Client {
-        private static int serverPort;
-        private static Scanner input;
+        //private static int serverPort;
+        //private static Scanner input;
         private static PrintWriter output;
         private static Socket socket;
         private static final int SERVER_PORT = 9090;
@@ -21,16 +21,29 @@ public class Client {
     
     
     public static void main(String[] args) throws IOException {
-        serverPort = 9090;
-        socket = new Socket("127.0.0.1",serverPort);
-        input = new Scanner( new InputStreamReader(socket.getInputStream()) );
+        socket = new Socket(SERVER_IP,SERVER_PORT);
+        //input = new Scanner( new InputStreamReader(socket.getInputStream()) );
+        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()) );
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
         output = new PrintWriter(socket.getOutputStream(), true);
         
+        while (true) {
+            String command = keyboard.readLine();
+            
+            if (command.equals("EXIT")) break;
+            
+            output.println(command);
+            String serverResponse = input.readLine();
+            System.out.println(serverResponse);
+        }
+        
+        /**
         while (input.hasNextLine()){
             String serverResponse = input.nextLine();
             System.out.println(serverResponse);
         }
         socket.close();
+        
 }
         
     public void run() throws IOException {
@@ -44,7 +57,7 @@ public class Client {
             socket.close();
         }
         
-/**        
+        
     }
     
     private void close() {

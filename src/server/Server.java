@@ -22,7 +22,7 @@ public class Server {
     private static String playerName;
     private static Player clientThread;
     private static PrintWriter out;
-    private static Scanner keyIn;
+    private static Scanner streamIn;
     private static final int SERVER_PORT = 9090;
     private static ExecutorService threadPool = Executors.newCachedThreadPool();
     private static LinkedList<Player> playerList;
@@ -39,10 +39,15 @@ public class Server {
                     playerSocket = listener.accept();
                     System.out.println("Client connected successfully.");
                     out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-                    //clientThread = new Player(playerSocket); shit aint workin
-                    out.println("Welcome! Please enter a username: ");
+                    streamIn = new Scanner(playerSocket.getInputStream());
+                    
+                    promptUsername();
+                    
+                    clientThread = new Player(playerSocket, playerName); //shit aint workin
                     playerList.add(clientThread);
                     threadPool.execute(clientThread);
+                    out.println("Welcome "+playerName+"!");
+                    gamePrompt();
                 }
     }
     
@@ -50,11 +55,21 @@ public class Server {
     client.close();
     listener.close();
     * */
-    
-        public void processInput() throws IOException {
-            keyIn = keyIn = new Scanner(playerSocket.getInputStream());
-            while (keyIn.hasNextLine()){
-                String input = keyIn.nextLine();
+        public static void promptUsername() throws IOException {
+            out.println("Welcome! Please enter a username: ");
+            String nameString = streamIn.nextLine();
+                if (nameString != null && nameString.length() >= 2) {
+                    playerName = nameString;
+                } else {
+                    out.println("Please enter a different username: ");
+                    streamIn.nextLine();
+            }
+        }
+        
+        public static void processInput() throws IOException {
+        
+            while (streamIn.hasNextLine()){
+                String input = streamIn.nextLine();
                 if (input.startsWith("EXIT")){
                     out.println("Exiting session. Socket closing.");
                     try {
@@ -70,18 +85,18 @@ public class Server {
             }
         }
         
-        public void gamePrompt() throws IOException {
+        public static void gamePrompt() throws IOException {
             out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
-            keyIn.nextLine();
+            streamIn.nextLine();
             processInput();
         }
-    /**    
+      
         // challenge an opponent to play; opponent can accept or reject
         // *********** Should this move to GameSession class??? ************
         public Player challengeOpponent() throws IOException {
             Player opponent = null;
-            while (keyIn.hasNextLine()) {
-                String selection = keyIn.nextLine();
+            while (streamIn.hasNextLine()) {
+                String selection = streamIn.nextLine();
                 
                 for (int i = 0; i < playerList.size(); i++){
                     if (selection.contains(playerList.toString())){         // if the selection (name typed) matches a playerName in the playerList
@@ -118,7 +133,7 @@ public class Server {
                     }
                     out.println("Select an opponent from below by typing their name:");
                     for (String opponent : opponents) {
-                        out.println(opponents);
+                        out.println(opponent);
                     }
                 } 
             } else {
@@ -126,5 +141,3 @@ public class Server {
             }
         }
     }
-*/
-}
