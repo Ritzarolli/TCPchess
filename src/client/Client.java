@@ -24,23 +24,21 @@ public class Client {
     public static void main(String[] args) throws IOException {
         try {
         socket = new Socket(SERVER_IP,SERVER_PORT);
-        BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()) );
+        
+        GameConnection game = new GameConnection(socket);
+        
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
         output = new PrintWriter(socket.getOutputStream(), true);
         
-        while (true) {
-            System.out.println("Welcome! Type \"Y\" to begin or \"N\" to exit: ");
-            
-            String command = keyboard.readLine();
-            
-            if (command.equals("N")){
-                break;
-            } else if (command.equals("Y")){
+        //System.out.println("Welcome! Type \"Y\" to begin or \"N\" to exit: ");
+        
+        new Thread(game).start();
+                
+            while (true) {    
+                String command = keyboard.readLine();
+                if (command.equalsIgnoreCase("N")) break;
                 output.println(command);
-                String serverResponse = input.readLine();
-                System.out.println(serverResponse);
             }
-        }
         } catch (Exception e){
             System.out.println("Error in Client main");
             e.printStackTrace();

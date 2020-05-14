@@ -34,48 +34,25 @@ public class Server {
     public static void main(String[] args) throws IOException {
         
         ServerSocket listener = new ServerSocket(SERVER_PORT);
-                while(running) {
-                    System.out.println("Chess server running ...");
-                    playerSocket = listener.accept();
-                    System.out.println("Client connected successfully.");
-                    out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-                    streamIn = new Scanner(playerSocket.getInputStream());
+        
+        System.out.println("Chess server running ...");        
+        
+            while(running) {
+                playerSocket = listener.accept();
+                System.out.println("New client connected successfully.");
+                
+                out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
+                streamIn = new Scanner(playerSocket.getInputStream());
                     
-                    clientThread = new Player(playerSocket);
-                    playerList.add(clientThread);
-                    //threadPool.execute(clientThread);
-                    out.println("Welcome!");
-                    
-                    //gamePrompt();
-                    listener.close();
+                clientThread = new Player(playerSocket);
+                playerList.add(clientThread);
+                threadPool.execute(clientThread);
+                  
+                //gamePrompt();
+                //listener.close();
                     
                 }
     }
-    
-
-        public static void processInput() throws IOException {
-        
-            while (streamIn.hasNextLine()){
-                String input = streamIn.nextLine();
-                if (input.startsWith("EXIT")){
-                    out.println("Exiting session. Socket closing.");
-                    try {
-                        playerSocket.close();
-                    } catch (IOException ioe) {
-                    }
-                } else if (input.startsWith("START")){
-                    break; //sendList();
-                } else {
-                    out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
-                }
-            }
-        }
-        
-        public static void gamePrompt() throws IOException {
-            out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
-            streamIn.nextLine();
-            processInput();
-        }
       
         // challenge an opponent to play; opponent can accept or reject
         // *********** Should this move to GameSession class??? ************
@@ -85,7 +62,7 @@ public class Server {
                 String selection = streamIn.nextLine();
                 
                 for (int i = 0; i < playerList.size(); i++){
-                    if (selection.contains(playerList.toString())){         // if the selection (name typed) matches a playerName in the playerList
+                    if (selection.contains(playerList.get(i).toString())){         // if the selection (name typed) matches a playerName in the playerList
                         opponent = (playerList.get(i));
                         opponent.out.println("You have been challenged to a game.");
                         opponent.out.println("Do you accept? (Reply Y or N)");
@@ -110,16 +87,19 @@ public class Server {
         
         
         // send list of opponents to client
-        public void sendList() throws IOException {
+        public static void sendList() throws IOException {
             
             if (!playerList.isEmpty()){
           
-                for (Player users : playerList){
+                for (Player user : playerList){
                     LinkedList<String> opponents = new LinkedList();
                     for (int i = 0; i < playerList.size(); i++) {
-                        opponents.add(playerList.get(i).playerName);
+                        if (!user.equals(playerList.get(i))){
+                        opponents.add(playerList.get(i).toString());
+                        }
                     }
                     out.println("Select an opponent from below by typing their name:");
+                    
                     for (String opponent : opponents) {
                         out.println(opponent);
                     }

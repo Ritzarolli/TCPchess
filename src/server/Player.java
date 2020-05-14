@@ -5,6 +5,7 @@
  */
 package server;
 
+import chess.Board;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -54,10 +55,11 @@ public class Player implements Runnable {
         @Override
         public void run() {
             try {
+                out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
+                
                 while (true) {
-                    out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
                     String request = in.readLine();
-                    if (request.equals("EXIT")){
+                    if (request.equalsIgnoreCase("EXIT")){
                         out.println("Exiting session. Socket closing.");
                         try {
                             playerSocket.close();
@@ -65,10 +67,9 @@ public class Player implements Runnable {
                             out.println("Error closing socket.");
                         }
                     }
-                    else if (request.equals("START")) {
+                    else if (request.equalsIgnoreCase("START")) {
                         out.println("loOk At ThIs ChEsS GaMe ooOooOOoo"); 
-                        //Server.sendList();
-                        break;
+                        Server.sendList();
                     } else {
                         out.println("Invalid command.");
                         out.flush();
@@ -79,6 +80,11 @@ public class Player implements Runnable {
                 System.err.println(ioe.getStackTrace());
             } finally {
                 out.close();
+                try {
+                    in.close();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         
