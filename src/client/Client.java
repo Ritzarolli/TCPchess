@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package client;
 import java.net.*;
 import java.util.*;
 import java.io.*;
 /**
- *
+ * Sends client commands to the server.
  * @author mnhammond0
  */
 public class Client {
@@ -25,19 +21,17 @@ public class Client {
         try {
         socket = new Socket(SERVER_IP,SERVER_PORT);
         
-        GameConnection game = new GameConnection(socket);
+        Communication serverComm = new Communication(socket);  
         
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
         output = new PrintWriter(socket.getOutputStream(), true);
         
-        //System.out.println("Welcome! Type \"Y\" to begin or \"N\" to exit: ");
-        
-        new Thread(game).start();
+        new Thread(serverComm).start();  //gives each client its own server input stream
                 
-            while (true) {    
-                String command = keyboard.readLine();
-                if (command.equalsIgnoreCase("N")) break;
-                output.println(command);
+        while (true) {    
+            String command = keyboard.readLine();
+            if (command.equalsIgnoreCase("N")) break;
+            output.println(command);
             }
         } catch (Exception e){
             System.out.println("Error in Client main");

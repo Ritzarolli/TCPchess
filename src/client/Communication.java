@@ -1,23 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package client;
 
 import java.io.*;
 import java.net.Socket;
 
 /**
- *
+ * Receives messages from the server for individual clients
  * @author mnhammond0
  */
-public class GameConnection implements Runnable {
+public class Communication implements Runnable {
     
     private Socket server;
     private BufferedReader in;
 
-    public GameConnection(Socket s) throws IOException {
+    public Communication(Socket s) throws IOException {
         server = s;
         in = new BufferedReader(new InputStreamReader(server.getInputStream()) );
     }
@@ -30,6 +26,7 @@ public class GameConnection implements Runnable {
                 if (serverResponse == null) break;
                 System.out.println(serverResponse);
             }
+            
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
