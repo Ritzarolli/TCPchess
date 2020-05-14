@@ -26,19 +26,38 @@ public class Player implements Runnable {
         static PrintWriter out;
 
 
-        public Player(Socket playerSocket, String playerName) throws IOException {
+        public Player(Socket playerSocket) throws IOException {
             this.playerSocket = playerSocket;
-            this.playerName = playerName;
             in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()) );
             out = new PrintWriter(playerSocket.getOutputStream(), true);
         }
+        
+        /**
+        public static String getUsername() throws IOException {
+            out.println("Welcome! Please enter a username: ");
+            String nameString = in.readLine();
+                
+            try {
+                if (nameString != null && nameString.length() >= 2) {
+                    playerName = nameString;
+                } else {
+                    out.println("Please enter a different username: ");
+                    in.readLine();
+                }
+            } catch (Exception e){
+                System.out.println("Error at promptUsername");
+            }
+            return playerName;
+        }
+        */
     
         @Override
         public void run() {
             try {
                 while (true) {
+                    out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
                     String request = in.readLine();
-                    if (request.equalsIgnoreCase("EXIT")){
+                    if (request.equals("EXIT")){
                         out.println("Exiting session. Socket closing.");
                         try {
                             playerSocket.close();
@@ -46,12 +65,12 @@ public class Player implements Runnable {
                             out.println("Error closing socket.");
                         }
                     }
-                    else if (request.equalsIgnoreCase("START")) {
+                    else if (request.equals("START")) {
                         out.println("loOk At ThIs ChEsS GaMe ooOooOOoo"); 
                         //Server.sendList();
                         break;
                     } else {
-                        out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
+                        out.println("Invalid command.");
                         out.flush();
                     }
                 }
@@ -62,4 +81,5 @@ public class Player implements Runnable {
                 out.close();
             }
         }
+        
 }

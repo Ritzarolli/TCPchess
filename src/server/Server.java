@@ -25,7 +25,7 @@ public class Server {
     private static Scanner streamIn;
     private static final int SERVER_PORT = 9090;
     private static ExecutorService threadPool = Executors.newCachedThreadPool();
-    private static LinkedList<Player> playerList;
+    private static LinkedList<Player> playerList = new LinkedList<>();
     //private static Player player1; //**Need to move this to separate GameSession class
     //private static Player player2; ** " 
     
@@ -41,28 +41,18 @@ public class Server {
                     out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
                     streamIn = new Scanner(playerSocket.getInputStream());
                     
-                    promptUsername();
-                    
-                    clientThread = new Player(playerSocket, playerName);
+                    clientThread = new Player(playerSocket);
                     playerList.add(clientThread);
-                    threadPool.execute(clientThread);
-                    out.println("Welcome "+playerName+"!");
-                    gamePrompt();
+                    //threadPool.execute(clientThread);
+                    out.println("Welcome!");
+                    
+                    //gamePrompt();
+                    listener.close();
+                    
                 }
     }
     
 
-        public static void promptUsername() throws IOException {
-            out.println("Welcome! Please enter a username: ");
-            String nameString = streamIn.nextLine();
-                if (nameString != null && nameString.length() >= 2) {
-                    playerName = nameString;
-                } else {
-                    out.println("Please enter a different username: ");
-                    streamIn.nextLine();
-            }
-        }
-        
         public static void processInput() throws IOException {
         
             while (streamIn.hasNextLine()){
@@ -77,7 +67,6 @@ public class Server {
                     break; //sendList();
                 } else {
                     out.println("Type \"START\" to initiate a game or \"EXIT\" to quit.");
-                    out.flush();
                 }
             }
         }

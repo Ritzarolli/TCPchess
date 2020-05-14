@@ -18,7 +18,8 @@ public class Client {
         private static Socket socket;
         private static final int SERVER_PORT = 9090;
         private static final String SERVER_IP = "127.0.0.1";
-    
+        public static String playerName;
+
     
     public static void main(String[] args) throws IOException {
         try {
@@ -28,17 +29,23 @@ public class Client {
         output = new PrintWriter(socket.getOutputStream(), true);
         
         while (true) {
+            System.out.println("Welcome! Type \"Y\" to begin or \"N\" to exit: ");
+            
             String command = keyboard.readLine();
             
-            if (command.equals("EXIT")) break;
-            
-            output.println(command);
-            String serverResponse = input.readLine();
-            System.out.println(serverResponse);
+            if (command.equals("N")){
+                break;
+            } else if (command.equals("Y")){
+                output.println(command);
+                String serverResponse = input.readLine();
+                System.out.println(serverResponse);
+            }
         }
         } catch (Exception e){
+            System.out.println("Error in Client main");
             e.printStackTrace();
         }        
     }
+
 }
 
