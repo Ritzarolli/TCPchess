@@ -15,7 +15,7 @@ public class Communication implements Runnable {
 
     public Communication(Socket s) throws IOException {
         server = s;
-        in = new BufferedReader(new InputStreamReader(server.getInputStream()) );
+        in = new BufferedReader(new InputStreamReader(server.getInputStream() ));
     }
     
     @Override

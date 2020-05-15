@@ -12,45 +12,50 @@ import java.util.concurrent.Executors;
  *
  * @author mnhammond0
  */
+
 public class Server {
     private static boolean running = true;
     private static Socket playerSocket;
-    private static String playerName;
     private static Player clientThread;
     private static PrintWriter out;
     private static Scanner in;
     private static final int SERVER_PORT = 9090;
     private static ExecutorService threadPool = Executors.newCachedThreadPool();
     private static LinkedList<Player> playerList = new LinkedList<>();
-    //private static Player player1; //**Need to move this to separate GameSession class
-    //private static Player player2; ** " 
-    
-    //private ObjectOutputStream out;
+
 
     public static void main(String[] args) throws IOException {
         
         ServerSocket listener = new ServerSocket(SERVER_PORT);
-        
+        int threadCount = 1;
         System.out.println("Chess server running ...");        
         
         while(running) {
             playerSocket = listener.accept();
-            System.out.println("New client connected successfully.");
+            System.out.println("Client "+threadCount+" connected successfully.");
                 
-            out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-            in = new Scanner(playerSocket.getInputStream());
+            //out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
+            //in = new Scanner(playerSocket.getInputStream());
 
             clientThread = new Player(playerSocket);
             playerList.add(clientThread);
             threadPool.execute(clientThread);
+            threadCount++;
             }
     }
+    
+    public void startGame() {
+            Socket p1 = playerList.pop().returnSocket(this.clientThread);
+            Socket p2 = playerList.pop().returnSocket(this.clientThread);
+                            
+            GameSession newGame = new GameSession(this, p1, p2);
+            threadPool.equals(newGame);
+        }
         
         //client handler
-        private static class Player implements Runnable {
+    private static class Player implements Runnable {
    
         static Socket playerSocket;
-        static String playerName;
         static Scanner keyIn;
         static BufferedReader in;
         static PrintWriter out;
@@ -58,12 +63,19 @@ public class Server {
 
         public Player(Socket playerSocket) throws IOException {
             this.playerSocket = playerSocket;
+            
+        }
+        
+        public void initiateMatch() {
+            
+            //startGame();
         }
 
         @Override
         public void run() {
             try {
-                in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream()) );
+
+                in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream() ));
                 out = new PrintWriter(playerSocket.getOutputStream(), true);
                 
                 out.println("W E L C O M E \n\nType \"START\" to initiate a game or \"EXIT\" to quit.");
@@ -74,17 +86,22 @@ public class Server {
                         out.println("Exiting session. Socket closing.");
                         try {
                             playerSocket.close();
+                            break;
                         } catch (IOException ioe) {
                             out.println("Error closing socket.");
                         }
                     }
                     else if (request.equalsIgnoreCase("START")) {
-                        out.println("loOk At ThIs ChEsS GaMe ooOooOOoo"); 
-                        sendList();
+                        out.println("loOk At ThIs ChEsS GaMe ooOooOOoo");
+                        if (playerList.size()>1){
+                            //startGame();
+                            
+                        }
+                        //sendList();
                         //challengeOpponent();
                     } else {
                         out.println("Invalid command.");
-                        out.flush();
+                        //out.flush();
                     }
                 }
             } catch (IOException ioe) {
@@ -109,22 +126,22 @@ public class Server {
                 // send list of opponents to client
         public static void sendList() throws IOException {
             int num = 1;  //to number the players in the list to simplify selection
-            if (playerList.size()>1){  //if the list contains more than just the current player
+            if (!playerList.isEmpty()){  //if the list contains more than just the current player
           
-                for (Player clientThread : playerList){
-                    LinkedList<String> opponents = new LinkedList();
+                ArrayList<String> opponents = new ArrayList();
+                for (Player user : playerList){
                     for (int i = 0; i < playerList.size(); i++) {
-                        if (!clientThread.equals(playerList.get(i))){
+                        if (!user.equals(playerList.get(i))){
                         opponents.add(playerList.get(i).toString());
-                        }
+                        }   
                     }
-                    out.println("Select an opponent from below by typing their name:");
-                    
-                    for (String opponent : opponents) {
+                }
+                for (String opponent : opponents) {
                         out.println("[ "+num+" ] "+opponent);
                         num=num+1;
-                    }
-                } 
+                }
+                out.println("Select an opponent from the list above \nby typing their number:");
+                     
             } else {
                 out.println("There are currently no other players.");
             }
@@ -165,3 +182,63 @@ public class Server {
             return opponent;
         }
     }
+    
+
+
+    /**
+    public class Server {
+    private static ArrayList<ThreadHandler> clientList = new ArrayList<>();
+    public static void main(String[] args) {
+        
+        int serverPort = 8190;
+        boolean running = true;
+        ExecutorService pool = Executors.newCachedThreadPool();
+        try {
+            int threadCount = 1;
+            ServerSocket listener = new ServerSocket(serverPort);
+            System.out.println("Server listening ...");
+            
+            while (running) {
+                Socket newSocket = listener.accept();
+                System.out.println("Client "+threadCount+" connected successfully.");
+                
+                Runnable client = new ThreadHandler(newSocket);
+                Thread thread = new Thread(client);
+                thread.start();
+                threadCount++;
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally {
+            
+        }
+    }
+}
+
+
+class ThreadHandler implements Runnable {
+    private Socket newSocket;
+    
+    public ThreadHandler(Socket newSocket){
+        this.newSocket = newSocket;
+    }
+
+    @Override
+    public void run() {
+        try {
+            try {
+                DataInputStream in = new DataInputStream(newSocket.getInputStream());
+                
+                boolean done = false;
+                while (!done) {
+                    System.out.print("Recieved from: " + newSocket.toString() + " message: " + in.readUTF());
+                }
+            } finally {
+                newSocket.close();
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    
+}*/

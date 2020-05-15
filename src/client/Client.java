@@ -7,9 +7,8 @@ import java.io.*;
  * Sends client commands to the server.
  * @author mnhammond0
  */
+
 public class Client {
-        //private static int serverPort;
-        //private static Scanner input;
         private static PrintWriter output;
         private static Socket socket;
         private static final int SERVER_PORT = 9090;
@@ -30,14 +29,47 @@ public class Client {
                 
         while (true) {    
             String command = keyboard.readLine();
-            if (command.equalsIgnoreCase("N")) break;
+            if (command.equalsIgnoreCase("Bye")) break;
             output.println(command);
             }
         } catch (Exception e){
             System.out.println("Error in Client main");
             e.printStackTrace();
         }        
+        
+        socket.close();
+        System.exit(0);
     }
 
 }
+
+
+
+/**
+public class Client {
+    private static PrintWriter output;
+    private static Socket socket;
+    private static final int SERVER_PORT = 8190;
+    private static final String SERVER_IP = "127.0.0.1";
+    
+    public static void main(String[] args) throws IOException {
+        try {
+            socket = new Socket(SERVER_IP, SERVER_PORT);
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            
+            out.writeUTF("Please let it work...");
+            out.writeChars("Is this better?");
+            
+            Scanner scan = new Scanner(System.in);
+            System.out.println(">  ");
+            String message = scan.nextLine();
+            
+            out.writeUTF(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            socket.close();
+        }
+    }
+}*/
 
