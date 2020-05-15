@@ -33,14 +33,14 @@ public class Server {
         while(running) {
             playerSocket = listener.accept();
             System.out.println("Client "+threadCount+" connected successfully.");
-                
-            //out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-            //in = new Scanner(playerSocket.getInputStream());
 
             clientThread = new Player(playerSocket);
             playerList.add(clientThread);
             threadPool.execute(clientThread);
             threadCount++;
+            
+            out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
+            in = new Scanner(playerSocket.getInputStream());
             }
     }
     
@@ -51,82 +51,11 @@ public class Server {
             GameSession newGame = new GameSession(this, p1, p2);
             threadPool.equals(newGame);
         }
-        
-        //client handler
-    private static class Player implements Runnable {
-   
-        static Socket playerSocket;
-        static Scanner keyIn;
-        static BufferedReader in;
-        static PrintWriter out;
-
-
-        public Player(Socket playerSocket) throws IOException {
-            this.playerSocket = playerSocket;
-            
-        }
-        
-        public void initiateMatch() {
-            
-            //startGame();
-        }
-
-        @Override
-        public void run() {
-            try {
-
-                in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream() ));
-                out = new PrintWriter(playerSocket.getOutputStream(), true);
-                
-                out.println("W E L C O M E \n\nType \"START\" to initiate a game or \"EXIT\" to quit.");
-                
-                while (true) {
-                    String request = in.readLine();
-                    if (request.equalsIgnoreCase("EXIT")){
-                        out.println("Exiting session. Socket closing.");
-                        try {
-                            playerSocket.close();
-                            break;
-                        } catch (IOException ioe) {
-                            out.println("Error closing socket.");
-                        }
-                    }
-                    else if (request.equalsIgnoreCase("START")) {
-                        out.println("loOk At ThIs ChEsS GaMe ooOooOOoo");
-                        if (playerList.size()>1){
-                            //startGame();
-                            
-                        }
-                        //sendList();
-                        //challengeOpponent();
-                    } else {
-                        out.println("Invalid command.");
-                        //out.flush();
-                    }
-                }
-            } catch (IOException ioe) {
-                System.err.println("IO Exception in Player class");
-                System.err.println(ioe.getStackTrace());
-            } finally {
-                out.close();
-                try {
-                    in.close();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        
-        public Socket returnSocket(Player user){
-            Socket temp = this.playerSocket;
-            return temp;
-        }
-}
-        
-                // send list of opponents to client
+    
+        // send list of opponents to client
         public static void sendList() throws IOException {
             int num = 1;  //to number the players in the list to simplify selection
-            if (!playerList.isEmpty()){  //if the list contains more than just the current player
+            if (playerList.size()>1){  //if the list contains more than just the current player
           
                 ArrayList<String> opponents = new ArrayList();
                 for (Player user : playerList){
@@ -141,6 +70,9 @@ public class Server {
                         num=num+1;
                 }
                 out.println("Select an opponent from the list above \nby typing their number:");
+                if (in.hasNextLine()) {
+                    challengeOpponent();
+                }
                      
             } else {
                 out.println("There are currently no other players.");
@@ -153,10 +85,11 @@ public class Server {
         public static Player challengeOpponent() throws IOException {
             Player opponent = null;
             while (in.hasNextLine()) {
-                String selection = in.nextLine();
+                String selection = in.nextLine(); //player's number gets input as String
+                int playerNum = Integer.parseInt(selection); //parse that String into an int
                 
                 for (int i = 0; i < playerList.size(); i++){
-                    if (selection.contains(playerList.get(i).toString())){         // if the selection (name typed) matches a playerName in the playerList
+                    if (playerNum == i+1){         // a player's number is +1 higher than its index
                         opponent = (playerList.get(i));
                         //PrintWriter oppOut = new PrintWriter(opponent.playerSocket.getOutputStream());
                         out.println("You have been challenged to a game.");
