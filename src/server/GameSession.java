@@ -44,7 +44,7 @@ public class GameSession implements Runnable {
         
         Random chance = new Random();
         int flipCoin = chance.nextInt();
-        if (flipCoin == 2){
+        if (flipCoin == 5){
             p1Color = "white";
             p2Color = "black";
         } else {
@@ -83,22 +83,6 @@ public class GameSession implements Runnable {
         return command;
     }
     
-    public void boardStream(Board board, PrintStream ps){
-        this.board=board;
-        p1out= new PrintWriter(ps);
-    }
-    
-    public String boardString() throws UnsupportedEncodingException {
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        String boardString = StandardCharsets.UTF_8.name();
-        try (PrintStream ps = new PrintStream(baos, true, boardString)) {
-            boardStream(getBoardState(), ps);
-        }
-        boardString = baos.toString(boardString);
-        return boardString;
-    }
-    
 
     @Override
     public void run() {
@@ -109,8 +93,7 @@ public class GameSession implements Runnable {
         p1out.println("\nYou are "+p1Color.toUpperCase());
         p2out.println("\nGAME ON PLAYER 2");
         p2out.println("\nYou are "+p2Color.toUpperCase());
-        
-        board.printBoard();
+
         
         p1out.println("\n"+board.boardString());
         //while (true) {
