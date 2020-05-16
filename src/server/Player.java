@@ -22,6 +22,9 @@ public class Player implements Runnable {
             this.playerSocket = playerSocket;
         }
         
+        public Socket returnSocket(Player user){
+            return user.playerSocket;
+        }
 
         @Override
         public void run() {
@@ -30,7 +33,7 @@ public class Player implements Runnable {
                 in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream() ));
                 out = new PrintWriter(playerSocket.getOutputStream(), true);
                 
-                out.println("W E L C O M E \n\nType \"START\" to initiate a game or \"EXIT\" to quit.");
+                out.println("W E L C O M E \n\nType \"EXIT\" to quit anytime.");
                 
                 while (true) {
                     String request = in.readLine();
@@ -42,12 +45,6 @@ public class Player implements Runnable {
                         } catch (IOException ioe) {
                             out.println("Error closing socket.");
                         }
-                    }
-                    else if (request.equalsIgnoreCase("START")) {
-                        out.println("loOk At ThIs ChEsS GaMe ooOooOOoo");
-                        Server.startGame();
-                        //Server.sendList();
-                        
                     } else {
                         out.println("Invalid command.");
                     }
@@ -65,8 +62,4 @@ public class Player implements Runnable {
             }
         }
         
-        public Socket returnSocket(Player user){
-            Socket temp = this.playerSocket;
-            return temp;
-        }
 }

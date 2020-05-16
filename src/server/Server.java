@@ -39,15 +39,30 @@ public class Server {
             threadPool.execute(clientThread);
             threadCount++;
             
+            for (int i = 0; i < playerList.size(); i++) {
+                System.out.println(playerList.get(i).toString());
+            }
             out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
             in = new Scanner(playerSocket.getInputStream());
+            
+            if (playerList.size()>1){
+                Player temp1 = playerList.pop();
+                Player temp2 = playerList.pop();
+                Socket p1 = temp1.returnSocket(temp1);
+                Socket p2 = temp2.returnSocket(temp2);
+                GameSession newGame = new GameSession(p1, p2);
+                threadPool.execute(newGame);
+            }
+            
 
         }
     }
     
         public static void startGame(){
-            Socket p1 = playerList.pop().returnSocket(clientThread);
-            Socket p2 = playerList.pop().returnSocket(clientThread);
+            Player temp1 = clientThread;
+            Player temp2 = playerList.pop();
+            Socket p1 = temp1.returnSocket(temp1);
+            Socket p2 = temp2.returnSocket(temp2);
             GameSession newGame = new GameSession(p1, p2);
             threadPool.execute(newGame);
         }
