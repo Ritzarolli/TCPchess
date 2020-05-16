@@ -8,14 +8,18 @@ package server;
 import chess.*;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author mnhammond0
  */
 public class GameSession implements Runnable {
-    private Server server;
     private Socket player1;
     private String p1Color;
     private PrintWriter p1out;
@@ -29,8 +33,9 @@ public class GameSession implements Runnable {
         player2 = p2s;
         
         try {
-            p1out = new PrintWriter(player1.getOutputStream());
-            p2out = new PrintWriter(player2.getOutputStream()); 
+            p1out = new PrintWriter(player1.getOutputStream(), true);  //sends server message to client 1
+            p2out = new PrintWriter(player2.getOutputStream(), true);  //sends server message to client 2
+
         } catch (IOException ioe){
             
         }
@@ -39,7 +44,7 @@ public class GameSession implements Runnable {
         
         Random chance = new Random();
         int flipCoin = chance.nextInt();
-        if (flipCoin == 1){
+        if (flipCoin == 2){
             p1Color = "white";
             p2Color = "black";
         } else {
@@ -61,8 +66,9 @@ public class GameSession implements Runnable {
     
     //check who's turn it is
     public Boolean isWhiteTurn(){
-        board.isWhiteTurn();
-        return true;
+        if (board.isWhiteTurn()) {
+            return true;
+        } else return false;
     }
     
     //parse the player's input to get their move
@@ -77,15 +83,42 @@ public class GameSession implements Runnable {
         return command;
     }
     
+    public void boardStream(Board board, PrintStream ps){
+        this.board=board;
+        p1out= new PrintWriter(ps);
+    }
+    
+    public String boardString() throws UnsupportedEncodingException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        String boardString = StandardCharsets.UTF_8.name();
+        try (PrintStream ps = new PrintStream(baos, true, boardString)) {
+            boardStream(getBoardState(), ps);
+        }
+        boardString = baos.toString(boardString);
+        return boardString;
+    }
+    
 
     @Override
     public void run() {
-        System.out.println("New chess game has begun!");
-        p1out.println("GAME ON");
-        p2out.println("GAME ON");
+        System.out.println("\nNew chess game has begun!");
         
-        //TODO
+
+        p1out.println("\nGAME ON PLAYER 1");
+        p1out.println("\nYou are "+p1Color.toUpperCase());
+        p2out.println("\nGAME ON PLAYER 2");
+        p2out.println("\nYou are "+p2Color.toUpperCase());
+        
+        board.printBoard();
+        
+        p1out.println("\n"+board.boardString());
+        //while (true) {
+            
+        //}
+        
+        
+                
         
     }
-    
 }

@@ -25,6 +25,10 @@ public class Communication implements Runnable {
                 String serverResponse = in.readLine();
                 if (serverResponse == null) break;
                 System.out.println(serverResponse);
+                
+                if (serverResponse.contains("printBoard")){
+                    System.out.println(serverResponse);
+                }
             }
             
         } catch (IOException ioe) {

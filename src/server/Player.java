@@ -33,11 +33,11 @@ public class Player implements Runnable {
                 in = new BufferedReader(new InputStreamReader(playerSocket.getInputStream() ));
                 out = new PrintWriter(playerSocket.getOutputStream(), true);
                 
-                out.println("W E L C O M E \n\nType \"EXIT\" to quit anytime.");
+                out.println("W E L C O M E \n\nType \"X\" to quit anytime.");
                 
                 while (true) {
                     String request = in.readLine();
-                    if (request.equalsIgnoreCase("EXIT")){
+                    if (request.equalsIgnoreCase("X")){
                         out.println("Exiting session. Socket closing.");
                         try {
                             playerSocket.close();

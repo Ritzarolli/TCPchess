@@ -5,6 +5,10 @@
  */
 package chess;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 /**
  *
@@ -155,7 +159,9 @@ public class Board {
     }
     
     
-    
+    /**
+     * Prints game board to the console for testing purposes
+     */
     public void printBoard() {
 
         String type;
@@ -215,5 +221,76 @@ public class Board {
             }
             System.out.println();
         }
+    }
+    
+    /**
+     * Returns a String representation of the game board
+     * 
+     * @return 
+     */
+    public String boardString() {
+        String board = "";
+        String type;
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                if (BOARD[x][y]!=null){
+                    type = BOARD[x][y].getType();
+                    switch (type) {
+                        case "pawn":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" p ");
+                            } else {
+                                board +=(" P ");
+                            }
+                            break;
+                        case "bishop":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" b ");
+                            } else {
+                                board +=(" B ");
+                            }
+                            break;
+                        case "king":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" k ");
+                            } else {
+                                board +=(" K ");
+                            }
+                            break;
+                        case "knight":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" n ");
+                            } else {
+                                board +=(" N ");
+                            }
+                            break;
+                        case "queen":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" q ");
+                            } else {
+                                board +=(" Q ");
+                            }
+                            break;
+                        case "rook":
+                            if ("black".equals(BOARD[x][y].getColor())) {
+                                board +=(" r ");
+                            } else {
+                                board +=(" R ");
+                            }
+                            break;
+
+                    }
+                } else {
+                    board += " • ";
+                }
+            }
+            board += "\n";
+    	}
+        return board;
+    }
+    
+    public int length(){
+        int length = BOARD.length;
+        return length;
     }
 } 

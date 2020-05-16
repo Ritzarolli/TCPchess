@@ -4,7 +4,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 import java.io.*;
-//import java.net.InetAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,7 +42,7 @@ public class Server {
                 System.out.println(playerList.get(i).toString());
             }
             out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
-            in = new Scanner(playerSocket.getInputStream());
+            in = new Scanner(playerSocket.getInputStream());                //gets message FROM the client
             
             if (playerList.size()>1){
                 Player temp1 = playerList.pop();

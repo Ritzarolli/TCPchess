@@ -28,7 +28,7 @@ public class Client {
                 
         while (true) {    
             String command = keyboard.readLine();
-            if (command.equalsIgnoreCase("Exit")) break;
+            if (command.equalsIgnoreCase("X")) break;
             output.println(command);
             }
         } catch (Exception e){
