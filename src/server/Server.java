@@ -44,12 +44,12 @@ public class Server {
             }
     }
     
-    public void startGame() {
-            Socket p1 = playerList.pop().returnSocket(this.clientThread);
-            Socket p2 = playerList.pop().returnSocket(this.clientThread);
+        public static void startGame() {
+            Socket p1 = playerList.pop().returnSocket(clientThread);
+            Socket p2 = playerList.pop().returnSocket(clientThread);
                             
-            GameSession newGame = new GameSession(this, p1, p2);
-            threadPool.equals(newGame);
+            //GameSession newGame = new GameSession(this, p1, p2);
+            //threadPool.equals(newGame);
         }
     
         // send list of opponents to client
@@ -71,7 +71,9 @@ public class Server {
                 }
                 out.println("Select an opponent from the list above \nby typing their number:");
                 if (in.hasNextLine()) {
-                    challengeOpponent();
+                    String selection = in.nextLine(); //player's number gets input as String
+                    int playerNum = Integer.parseInt(selection); //parse that String into an int
+                    challengeOpponent(playerNum);
                 }
                      
             } else {
@@ -81,34 +83,30 @@ public class Server {
         
         
         // challenge an opponent to play; opponent can accept or reject
-        // *********** Should this move to GameSession class??? ************
-        public static Player challengeOpponent() throws IOException {
+        public static Player challengeOpponent(int selection) throws IOException {
             Player opponent = null;
             while (in.hasNextLine()) {
-                String selection = in.nextLine(); //player's number gets input as String
-                int playerNum = Integer.parseInt(selection); //parse that String into an int
                 
                 for (int i = 0; i < playerList.size(); i++){
-                    if (playerNum == i+1){         // a player's number is +1 higher than its index
+                    if (selection == i+1){         // a player's number is +1 higher than its index
                         opponent = (playerList.get(i));
-                        //PrintWriter oppOut = new PrintWriter(opponent.playerSocket.getOutputStream());
+
                         out.println("You have been challenged to a game.");
                         out.println("Do you accept? (Reply Y or N)");
                         
-                        //Scanner oppIn = new Scanner(opponent.playerSocket.getInputStream());
                         String response = in.nextLine();
                         while (in.hasNextLine()) {
-                            if (response.startsWith("Y")){
+                            if (response.equalsIgnoreCase("Y")){
                                 out.println("Challenge accepted. Game on!");
                                 return opponent;
-                            } else if (response.startsWith("N")) {
+                            } else if (response.equalsIgnoreCase("N")) {
                                 out.println("Your request has been rejected.");
-                            } else {
-                                out.println("The selected player is unreachable.");
                             }
                         }
                     } else {
+                        out.println("The selected player is unreachable.");
                         out.println("Please try another number.");
+                        sendList();
                     }
                 }  
             }

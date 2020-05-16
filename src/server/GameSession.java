@@ -52,6 +52,7 @@ public class GameSession implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("New chess game has begun!");
         board.printBoard();
         
     }

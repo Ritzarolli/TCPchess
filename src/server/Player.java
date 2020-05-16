@@ -52,7 +52,6 @@ public class Player implements Runnable {
                         
                     } else {
                         out.println("Invalid command.");
-                        //out.flush();
                     }
                 }
             } catch (IOException ioe) {
