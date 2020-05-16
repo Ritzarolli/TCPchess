@@ -55,6 +55,8 @@ public class GameSession implements Runnable {
         System.out.println("New chess game has begun!");
         board.printBoard();
         
+        //TODO
+        
     }
     
 }

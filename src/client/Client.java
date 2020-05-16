@@ -22,7 +22,7 @@ public class Client {
         
         Communication serverComm = new Communication(socket);  
         
-        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+        DataInputStream keyboard = new DataInputStream(System.in);
         output = new PrintWriter(socket.getOutputStream(), true);
         
         new Thread(serverComm).start();  //gives each client its own server input stream

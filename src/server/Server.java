@@ -48,8 +48,8 @@ public class Server {
             Socket p1 = playerList.pop().returnSocket(clientThread);
             Socket p2 = playerList.pop().returnSocket(clientThread);
                             
-            //GameSession newGame = new GameSession(this, p1, p2);
-            //threadPool.equals(newGame);
+            GameSession newGame = new GameSession(this, p1, p2);
+            threadPool.equals(newGame);
         }
     
         // send list of opponents to client
