@@ -74,10 +74,11 @@ public class GameSession implements Runnable {
     
     //parse the player's input to get their move
     public Move processInput(Socket player, String move) {
-        int fromCol = Integer.parseInt(move.substring(0, 1)); //these are subject to change
-        int fromRow = Integer.parseInt(move.substring(2, 3)); //depending on how I prompt user
-        int toCol = Integer.parseInt(move.substring(5, 6));
-        int toRow = Integer.parseInt(move.substring(7, 8));
+        int fromCol = Character.getNumericValue(move.charAt(0)); //these are subject to change
+        int fromRow = Character.getNumericValue(move.charAt(1)); //depending on how I prompt user
+        int toCol = Character.getNumericValue(move.charAt(2));
+        int toRow = Character.getNumericValue(move.charAt(3));
+        
         
         Move command = new Move(fromCol, fromRow, toCol, toRow);
         
@@ -104,13 +105,15 @@ public class GameSession implements Runnable {
                 p1out.println("\n"+board.boardString());
                 p1out.println("\nWHITE\n\n");
                 p1out.println("WHITE moves first.\nMake your move:\n");
+                //String row = p1in.nextLine();
+                //String col = p1in.nextLine();
                 
                 p2out.println("\nblack");
                 p2out.println("\n"+board.boardString());
                 p2out.println("WHITE\n\n");
                 p2out.println("Please wait while WHITE makes their move.");
                 
-                String move = p1in.next();
+                String move = p1in.nextLine();
                 setBoardState( processInput(player1, move) );
                 
             } else {
@@ -124,7 +127,7 @@ public class GameSession implements Runnable {
                 p1out.println("\nWHITE\n\n");
                 p1out.println("Please wait while WHITE makes their move.");
                 
-                String move = p2in.next();
+                String move = p2in.nextLine();
                 setBoardState( processInput(player2, move) );
             }
             
@@ -140,7 +143,7 @@ public class GameSession implements Runnable {
                 p2out.println("WHITE\n\n");
                 p2out.println("It is your turn.\nMake your move:\n");
                 
-                String move = p1in.next();
+                String move = p1in.nextLine();
                 setBoardState( processInput(player1, move) );
                                    
             } else {
@@ -154,7 +157,7 @@ public class GameSession implements Runnable {
                 p1out.println("\nWHITE\n\n");
                 p1out.println("It is your turn.\nMake your move:\n");
                 
-                String move = p2in.next();
+                String move = p2in.nextLine();
                 setBoardState( processInput(player2, move) );
             } 
             
