@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 /**
  *
@@ -15,7 +14,6 @@ import java.util.Scanner;
 public class Player implements Runnable {
    
         Socket playerSocket;
-        Scanner keyIn;
         BufferedReader in;
         PrintWriter out;
 
@@ -47,8 +45,8 @@ public class Player implements Runnable {
                     }
                     else if (request.equalsIgnoreCase("START")) {
                         out.println("loOk At ThIs ChEsS GaMe ooOooOOoo");
-                        
-                        Server.sendList();
+                        Server.startGame();
+                        //Server.sendList();
                         
                     } else {
                         out.println("Invalid command.");

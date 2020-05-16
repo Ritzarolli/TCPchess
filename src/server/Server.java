@@ -41,16 +41,17 @@ public class Server {
             
             out = new PrintWriter(playerSocket.getOutputStream(), true);    //send message TO the client
             in = new Scanner(playerSocket.getInputStream());
-            }
+
+        }
     }
     
-        public static void startGame() {
+        public static void startGame(){
             Socket p1 = playerList.pop().returnSocket(clientThread);
             Socket p2 = playerList.pop().returnSocket(clientThread);
-                            
-            GameSession newGame = new GameSession(this, p1, p2);
-            threadPool.equals(newGame);
+            GameSession newGame = new GameSession(p1, p2);
+            threadPool.execute(newGame);
         }
+       
     
         // send list of opponents to client
         public static void sendList() throws IOException {
