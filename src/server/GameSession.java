@@ -65,12 +65,12 @@ public class GameSession implements Runnable {
         board.getBoard();
     }
     
-    //check who's turn it is
+    /** /check who's turn it is
     public Boolean isWhiteTurn(){
         if (board.isWhiteTurn()) {
             return true;
         } else return false;
-    }
+    }*/
     
     //parse the player's input to get their move
     public Move processInput(Socket player, String move) {
@@ -97,16 +97,16 @@ public class GameSession implements Runnable {
         
         while (true) {
             getBoardState();
-            boolean moved = true;
+            boolean whiteTurn = board.isWhiteTurn();  //true
+            boolean p1firstMove = true;
+            boolean p2firstMove = true;
             
-            //first move
-            if (p1Color.equalsIgnoreCase("white") && isWhiteTurn() != moved) {
+            //first move, white player 1 goes first
+            if (p1Color.equalsIgnoreCase("white") && whiteTurn && p1firstMove) {
                 p1out.println("\nblack");
                 p1out.println("\n"+board.boardString());
                 p1out.println("\nWHITE\n\n");
                 p1out.println("WHITE moves first.\nMake your move:\n");
-                //String row = p1in.nextLine();
-                //String col = p1in.nextLine();
                 
                 p2out.println("\nblack");
                 p2out.println("\n"+board.boardString());
@@ -115,8 +115,10 @@ public class GameSession implements Runnable {
                 
                 String move = p1in.nextLine();
                 setBoardState( processInput(player1, move) );
-                
-            } else {
+                whiteTurn=false;
+            
+            //first move, white player 2 goes first
+            } else if (p2Color.equalsIgnoreCase("white") && whiteTurn && p2firstMove) {
                 p2out.println("\nblack");
                 p2out.println("\n"+board.boardString());
                 p2out.println("\nWHITE\n\n");
@@ -129,24 +131,58 @@ public class GameSession implements Runnable {
                 
                 String move = p2in.nextLine();
                 setBoardState( processInput(player2, move) );
-            }
-            
-            //subsequent moves
-            if (p1Color.equalsIgnoreCase("white") && isWhiteTurn() == moved) {
+                whiteTurn=false;
+                
+            //white player 1 subsequent moves
+            } else if (p1Color.equalsIgnoreCase("white") && whiteTurn && !p1firstMove) {
                 p1out.println("\nblack");
                 p1out.println("\n"+board.boardString());
                 p1out.println("\nWHITE\n\n");
-                p1out.println("Please wait while BLACK makes their move.");
+                p1out.println("It is your turn.\nMake your move:\n");
+                
+                p2out.println("\nblack");
+                p2out.println("\n"+board.boardString());
+                p2out.println("WHITE\n\n");
+                p2out.println("Please wait while WHITE makes their move.");
+                
+                String move = p1in.nextLine();
+                setBoardState( processInput(player1, move) );
+                whiteTurn=false;
+            
+            //white player 2 subsequent moves
+            } else if (p2Color.equalsIgnoreCase("white") && whiteTurn && !p2firstMove) {
+                p2out.println("\nblack");
+                p2out.println("\n"+board.boardString());
+                p2out.println("\nWHITE\n\n");
+                p2out.println("It is your turn.\nMake your move:\n");
+                
+                p1out.println("\nblack");
+                p1out.println("\n"+board.boardString());
+                p1out.println("\nWHITE\n\n");
+                p1out.println("Please wait while WHITE makes their move.");
+                
+                String move = p2in.nextLine();
+                setBoardState( processInput(player2, move) );
+                whiteTurn=false;
+            
+            //black player 1 waits for white to take turn
+            } else if (p1Color.equalsIgnoreCase("black") && whiteTurn) {
+                p1out.println("\nblack");
+                p1out.println("\n"+board.boardString());
+                p1out.println("\nWHITE\n\n");
+                p1out.println("Please wait while WHITE makes their move.");
                 
                 p2out.println("\nblack");
                 p2out.println("\n"+board.boardString());
                 p2out.println("WHITE\n\n");
                 p2out.println("It is your turn.\nMake your move:\n");
                 
-                String move = p1in.nextLine();
-                setBoardState( processInput(player1, move) );
-                                   
-            } else {
+                String move = p2in.nextLine();
+                setBoardState( processInput(player2, move) );
+                whiteTurn=false;
+            
+            //black player 1 move    
+            } else if (p1Color.equalsIgnoreCase("black") && !whiteTurn) {
                 p2out.println("\nblack");
                 p2out.println("\n"+board.boardString());
                 p2out.println("\nWHITE\n\n");
@@ -157,8 +193,41 @@ public class GameSession implements Runnable {
                 p1out.println("\nWHITE\n\n");
                 p1out.println("It is your turn.\nMake your move:\n");
                 
+                String move = p1in.nextLine();
+                setBoardState( processInput(player1, move) );
+                whiteTurn=true;
+                
+            //black player 2 waits for white to take turn  
+            } else if (p2Color.equalsIgnoreCase("black") && whiteTurn) {
+                p2out.println("\nblack");
+                p2out.println("\n"+board.boardString());
+                p2out.println("\nWHITE\n\n");
+                p2out.println("Please wait while WHITE makes their move.");
+                
+                p1out.println("\nblack");
+                p1out.println("\n"+board.boardString());
+                p1out.println("WHITE\n\n");
+                p1out.println("It is your turn.\nMake your move:\n");
+                
+                String move = p1in.nextLine();
+                setBoardState( processInput(player1, move) );
+                whiteTurn=false;
+            
+            //black player 2 move  
+            } else if (p2Color.equalsIgnoreCase("black") && !whiteTurn) {
+                p1out.println("\nblack");
+                p1out.println("\n"+board.boardString());
+                p1out.println("\nWHITE\n\n");
+                p1out.println("Please wait while BLACK makes their move.");
+                
+                p2out.println("\nblack");
+                p2out.println("\n"+board.boardString());
+                p2out.println("\nWHITE\n\n");
+                p2out.println("It is your turn.\nMake your move:\n");
+                
                 String move = p2in.nextLine();
                 setBoardState( processInput(player2, move) );
+                whiteTurn=true;
             } 
             
         }
