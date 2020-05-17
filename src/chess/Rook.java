@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Move logic for the Rook pieces
  * @author mnhammond0
  */
 public class Rook extends Piece {

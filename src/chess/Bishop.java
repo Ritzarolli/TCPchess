@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Logic for the Bishop
  * @author mnhammond0
  */
 public class Bishop extends Piece {

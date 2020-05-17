@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Move logic for the Knight
  * @author mnhammond0
  */
 public class Knight extends Piece {

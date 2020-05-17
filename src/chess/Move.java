@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Allows pieces to be moved from one space to another
  * @author mnhammond0
  */
 public class Move {

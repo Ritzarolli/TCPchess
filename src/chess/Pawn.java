@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Move logic for the Pawns
  * @author mnhammond0
  */
 public class Pawn extends Piece {

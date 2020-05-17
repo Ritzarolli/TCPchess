@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * Move logic for the Queen pieces
  * @author mnhammond0
  */
 public class Queen extends Piece {

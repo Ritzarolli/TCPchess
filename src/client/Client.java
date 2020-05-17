@@ -1,11 +1,14 @@
 
 package client;
+
 import java.net.*;
-import java.util.*;
 import java.io.*;
 /**
- * Sends client commands to the server.
+ * Sends client commands to the server on the local machine.
+ * Uses Communication class to receive server responses for individual threads
+ * 
  * @author mnhammond0
+ * @version 2020.05.16
  */
 
 public class Client {
@@ -41,34 +44,3 @@ public class Client {
     }
 
 }
-
-
-
-/**
-public class Client {
-    private static PrintWriter output;
-    private static Socket socket;
-    private static final int SERVER_PORT = 8190;
-    private static final String SERVER_IP = "127.0.0.1";
-    
-    public static void main(String[] args) throws IOException {
-        try {
-            socket = new Socket(SERVER_IP, SERVER_PORT);
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            
-            out.writeUTF("Please let it work...");
-            out.writeChars("Is this better?");
-            
-            Scanner scan = new Scanner(System.in);
-            System.out.println(">  ");
-            String message = scan.nextLine();
-            
-            out.writeUTF(message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            socket.close();
-        }
-    }
-}*/
-
