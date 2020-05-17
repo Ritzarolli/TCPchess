@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- *
+ * Serves as a client with which to create new threads
  * @author mnhammond0
  */
 public class Player implements Runnable {
@@ -17,15 +17,28 @@ public class Player implements Runnable {
         BufferedReader in;
         PrintWriter out;
 
-
+        /**
+         * Constructor
+         * @param playerSocket
+         * @throws IOException 
+         */
         public Player(Socket playerSocket) throws IOException {
             this.playerSocket = playerSocket;
         }
         
+        /**
+         * Return the socket of the client requested
+         * @param user
+         * @return 
+         */
         public Socket returnSocket(Player user){
             return user.playerSocket;
         }
 
+        /**
+         * Communicates with each thread 
+         * to process input to the server
+         */
         @Override
         public void run() {
             try {

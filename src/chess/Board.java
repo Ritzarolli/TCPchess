@@ -7,7 +7,8 @@ package chess;
 
 import java.util.*;
 /**
- *
+ * Creates a new chess board with all 32 appropriate pieces.
+ * Allows pieces to move on the board and track the current state of the board.
  * @author mnhammond0
  */
 public class Board {
@@ -17,6 +18,10 @@ public class Board {
     private final ArrayList<Piece> blackPieces;
     private boolean isWhiteTurn;
     
+    /**
+     * Constructor for a new game board,
+     * including arrays to contain all the pieces
+     */
     public Board() {
         BOARD = new Piece[8][8];
         whitePieces = new ArrayList<>(16);
@@ -25,29 +30,57 @@ public class Board {
         setStartPieces();
     }
     
+    /**
+     * Returns the board object
+     * @return 
+     */
     public Piece[][] getBoard() {
         return BOARD;
     }
     
+    /**
+     * Returns the piece located in the spot
+     * at the given indeces
+     * @param col
+     * @param row
+     * @return 
+     */
     public Piece getPiece(int col, int row) {
         return BOARD[col][row];
     }
     
+    /**
+     * Sets individual pieces at the given indeces
+     * @param piece
+     * @param col
+     * @param row 
+     */
     public void setPiece(Piece piece, int col, int row) {
         BOARD[col][row] = piece;
     }
     
+    /**
+     * For use in game play to determine whose turn it is
+     * to make a move
+     * @return 
+     */
     public boolean isWhiteTurn() {
         return isWhiteTurn;
     }
     
+    /**
+     * Sets all the pieces in the starting positions
+     * for use when a new board object is created
+     */
     private void setStartPieces() {
         setWhitePieces();
         setBlackPieces();
 
     }
 
-    // Place the white pieces in their starting spots
+    /**
+     * Places the white pieces in their starting spots
+     */
     private void setWhitePieces() {
         int x;
         int y = 6;
@@ -80,7 +113,9 @@ public class Board {
         }
     }
 
-    //Place the black pieces in their starting spots
+    /**
+     * Places the black pieces in their starting spots
+     */
     private void setBlackPieces() {
         int x;
         int y = 1;
@@ -118,7 +153,12 @@ public class Board {
         return colNum >= 0 && colNum < 8 && rowNum >= 0 && rowNum < 8;
     }
     
-    
+    /**
+     * Provides move validation for a requested move
+     * as it relates to the board during game play
+     * @param move
+     * @return 
+     */
     public boolean move(Move move) {
         //Check the bounds of the starting position
     if (!isInBounds(move.FROM_COL, move.FROM_ROW)) {

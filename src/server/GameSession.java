@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package server;
 
 import chess.*;
@@ -11,7 +7,8 @@ import java.net.*;
 import java.util.*;
 
 /**
- *
+ * A new game matching two connected clients
+ * on a server using TCP sockets.
  * @author mnhammond0
  */
 public class GameSession implements Runnable {
@@ -25,6 +22,16 @@ public class GameSession implements Runnable {
     private Scanner p2in;
     private Board board;
     
+    /**
+     * Constructor for a new game, including adding
+     * the player sockets, setting up their input
+     * and output streams, and instantiating a
+     * new game board object.
+     * 
+     * A coin flip determines the color for each player
+     * @param p1s
+     * @param p2s 
+     */
     public GameSession(Socket p1s, Socket p2s) {
         player1 = p1s;
         player2 = p2s;
@@ -54,12 +61,18 @@ public class GameSession implements Runnable {
         
     }
     
-    //return the board's current state
+    /**
+     * Return the current state of the game board
+     * @return 
+     */
     public Board getBoardState() {
         return board;
     }
     
-    //update the board after a move
+    /**
+     * Updates the board after a player makes a move
+     * @param playerMove 
+     */
     public void setBoardState(Move playerMove) {
         board.move(playerMove);
         board.getBoard();
@@ -72,7 +85,13 @@ public class GameSession implements Runnable {
         } else return false;
     }*/
     
-    //parse the player's input to get their move
+    /**
+     * Parse the player's String input to get the move
+     * associated with the player's chosen indeces 
+     * @param player
+     * @param move
+     * @return 
+     */
     public Move processInput(Socket player, String move) {
         int fromCol = Character.getNumericValue(move.charAt(0)); //these are subject to change
         int fromRow = Character.getNumericValue(move.charAt(1)); //depending on how I prompt user
@@ -85,6 +104,10 @@ public class GameSession implements Runnable {
         return command;
     }
 
+    /**
+     * Controls the game by sending player input to the server
+     * and providing the server's response back to the clients
+     */
     @Override
     public void run() {
         System.out.println("\nNew chess game has begun!");

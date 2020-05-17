@@ -6,7 +6,7 @@
 package chess;
 
 /**
- *
+ * 
  * @author mnhammond0
  */
 public abstract class Piece {
